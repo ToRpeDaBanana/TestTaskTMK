@@ -1,10 +1,21 @@
-{% extends 'app/base.html.twig' %}
+{% extends 'base.html.twig' %}
+
+{% block title %}Welcome to the Frontpage{% endblock %}
 
 {% block body %}
-    {# <h1>Статьи</h1>
+<h1>Active Articles</h1>
+
+<!-- Кнопка для заполнения статичных данных -->
+<a href="{{ path('app_article_populate') }}" class="btn btn-primary">Заполнить статичными данными</a>
+
 <ul>
     {% for article in articles %}
-        <li>{{ article.title }}</li>
+        <li>
+            <a href="{{ path('app_article_show', { slug: article.slug }) }}">{{ article.title }}</a>
+            <p>{{ article.description }}</p>
+        </li>
+    {% else %}
+        <li>No articles found.</li>
     {% endfor %}
-</ul> #}
+</ul>
 {% endblock %}

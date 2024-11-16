@@ -18,13 +18,5 @@ services:
         exclude:
             - '../src/Kernel.php'
             - '../src/Domain/{Entity,Exception,RepositoryFilter,ValueObject}'
-
-    App\Presentation\Http\App\Controller\Frontpage\FrontpageController:
-        tags: ['controller.service_arguments']
-    
-    App\Infrastructure\Persistence\Doctrine\Repository\Article:
-        class: App\Infrastructure\Persistence\Article\DoctrineArticleRepository
-        arguments:
-            - '@doctrine.orm.entity_manager' # Объект EntityManager
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones

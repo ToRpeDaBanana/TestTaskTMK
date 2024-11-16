@@ -28,12 +28,6 @@ final class Version20241116133216 extends AbstractMigration
             description TEXT NOT NULL,
             created_at DATETIME(0) NOT NULL
         ) DEFAULT CHARACTER SET UTF8mb4 ENGINE = InnoDB;');
-
-
-        $this->addSql('INSERT INTO articles (title, slug, is_active, views, description, created_at) VALUES 
-            ("Первая статья", "pervaya-statiya", 1, 0, "Описание первой статьи", NOW()),
-            ("Вторая статья", "vtoraya-statiya", 1, 0, "Описание второй статьи", NOW()),
-            ("Третья статья", "tretya-statiya", 1, 0, "Описание третьей статьи", NOW())');
     }
 
     public function down(Schema $schema): void
