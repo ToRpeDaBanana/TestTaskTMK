@@ -1,6 +1,6 @@
 # TestTaskTMK
 
-#Установка
+Установка
 1) Клонировать репозиторий в папку своего Docker `git clone git@github.com:ToRpeDaBanana/TestTaskTMK.git` или скачать по ссылке настроенные Docker файлы от проекта `https://disk.yandex.ru/d/PVM-WYr4A-Ylrg`.
 2) В терминале папки проекта прописываем `composer install`.
 2.1) Если используете свои Docker файлы - нужно поменять строку подключения к базе данных в файле `.env` `DATABASE_URL="mysql://USERNAME:PASSWORD@(название контейнера с бд):3306/БД?serverVersion=11.5.2-MariaDB-ubu2404"`
