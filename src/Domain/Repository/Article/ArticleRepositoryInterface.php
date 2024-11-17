@@ -43,10 +43,15 @@ interface ArticleRepositoryInterface
      *
      * @return Article[]
      */
-    public function findAllActive(): array;
+    public function findAllActive(int $page = 1, int $limit = 10): array;
 
     /**
      * Найти по уникальной ссылке
      */
     public function findBySlug(string $slug): Article;
+    
+    /**
+     * Найти количество активных статей
+     */
+    public function countActiveArticles(): int;
 }

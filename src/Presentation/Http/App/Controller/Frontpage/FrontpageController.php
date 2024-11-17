@@ -4,62 +4,43 @@ declare(strict_types=1);
 
 namespace App\Presentation\Http\App\Controller\Frontpage;
 
-use App\Domain\Repository\Article\ArticleRepositoryInterface;
+use App\Application\Service\ArticleService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use App\Domain\Entity\Article\Article;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class FrontpageController extends AbstractController
 {
-    private ArticleRepositoryInterface $articleRepository;
-
-    public function __construct(ArticleRepositoryInterface $articleRepository)
+    private ArticleService $articleService;
+    // Конструктор для внедрения ArticleService
+    public function __construct(ArticleService $articleService)
     {
-        $this->articleRepository = $articleRepository;
+        $this->articleService = $articleService;
     }
 
-    #[Route(path: '/', name: 'app_article_list')]
-    public function list(): Response
+    // Маршрут для отображения списка статей с постраничной навигацией
+    #[Route(path: '/{page}', name: 'app_article_list', requirements: ['page' => '\d+'])]
+    public function list(int $page = 1): Response
     {
-        // Получение всех активных статей
-        $articles = $this->articleRepository->findAllActive();
-
-        // Передача статей в шаблон
-        return $this->render('app/page/frontpage/page.html.twig', [
-            'articles' => $articles,
-        ]);
-    }
-
-    #[Route(path: '/article/{slug}', name: "app_article_show")]
-    public function show(string $slug): Response
-    {
-        $article = $this->articleRepository->findBySlug($slug);
-        return $this->render('app/page/article/detail.html.twig', [
-            'article' => $article,
-        ]);
-    }
-
-    #[Route(path: '/populate', name: 'app_article_populate')]
-    public function populate(): RedirectResponse
-    {
-        $staticArticles = [
-            ['title' => 'First Article', 'slug' => 'first-article', 'description' => 'Description for the first article.'],
-            ['title' => 'Second Article', 'slug' => 'second-article', 'description' => 'Description for the second article.'],
-            // Добавьте другие статьи по аналогии
-        ];
-
-        foreach ($staticArticles as $data) {
-            $article = new Article(
-                $data['title'],
-                $data['slug'],
-                $data['description']
-            );
-            $this->articleRepository->save($article);
+        if ($page === null) {
+            $page = 1; // Присваиваем значение по умолчанию
+        }
+        try {
+            // Получаем активные статьи и общее количество
+            $articles = $this->articleService->getAllActiveArticles($page);
+            $totalArticles = $this->articleService->getActiveArticlesCount();
+            $totalPages = ceil($totalArticles / 10); // Расчет общего количества страниц
+        } catch (\RuntimeException $e) {
+            // Обработка ошибок и установка значений по умолчанию
+            $this->addFlash('error', $e->getMessage());
+            $articles = [];
+            $totalPages = 1; // Необходимо, чтобы избежать ошибок при выводе страниц
         }
 
-        // Перенаправление на страницу списка статей после вставки
-        return $this->redirectToRoute('app_article_list');
+        return $this->render('app/page/frontpage/page.html.twig', [
+            'articles' => $articles,
+            'current_page' => $page,
+            'total_pages' => $totalPages,
+        ]);
     }
 }

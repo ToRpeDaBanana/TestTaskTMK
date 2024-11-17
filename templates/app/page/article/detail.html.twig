@@ -2,9 +2,24 @@
 
 {% block title %}{{ article.title }}{% endblock %}
 
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        
+    </style>
+{% endblock %}
+
 {% block body %}
-<h1>{{ article.title }}</h1>
-<p>{{ article.description }}</p>
-<p>Views: {{ format_views(article.views) }}</p>
-<p>Created at: {{ article.createdAt|date('Y-m-d H:i') }}</p>
+<div class="container">
+    <div class="article-container">
+        <h1>{{ article.title }}</h1>
+        <p class="article-description">{{ article.description }}</p>
+        <p class="article-meta">Просмотров: {{ format_views(article.views) }}</p>
+        <p class="article-meta">Создана: {{ article.createdAt|date('Y-m-d H:i') }}</p>
+        
+        <div class="text-center">
+            <a href="{{ path('app_article_list') }}" class="btn-back">Вернуться к списку статей</a>
+        </div>
+    </div>
+</div>
 {% endblock %}

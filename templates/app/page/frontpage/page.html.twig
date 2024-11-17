@@ -1,21 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Welcome to the Frontpage{% endblock %}
+{% block title %}Список статей{% endblock %}
 
 {% block body %}
-<h1>Active Articles</h1>
+<div class="container">
+    <h1>Статьи</h1>
+    {% if app.session.flashBag.has('error') %}
+        <div class="alert alert-danger">
+            {{ app.session.flashBag.get('error')[0] }}
+        </div>
+    {% endif %}
+    
+    <div class="text-center">
+        <a href="{{ path('app_article_populate') }}" class="btn btn-primary">Заполнить статичными данными</a>
+    </div>
+    
+    <ul class="article-list">
+        {% if articles is not empty %}
+            {% for article in articles %}
+            <ul class="article-list">
+                <li>
+                    <a class="article-a" href="{{ path('app_article_show', { slug: article.slug }) }}">
+                        <h2>{{ article.title }}</h2>
+                        <p class="article-meta">Просмотров: {{ format_views(article.views) }}</p>
+                    </a>
+                </li>
+            </ul>
+            {% endfor %}
 
-<!-- Кнопка для заполнения статичных данных -->
-<a href="{{ path('app_article_populate') }}" class="btn btn-primary">Заполнить статичными данными</a>
-
-<ul>
-    {% for article in articles %}
-        <li>
-            <a href="{{ path('app_article_show', { slug: article.slug }) }}">{{ article.title }}</a>
-            <p>{{ article.description }}</p>
-        </li>
-    {% else %}
-        <li>No articles found.</li>
-    {% endfor %}
-</ul>
+            {% else %}
+                <li>Статьи не найдены.</li>
+        {% endif %}
+    </ul>
+{% if articles is not empty %}
+    <div class="pagination">
+        {% if current_page > 1 %}
+            <a href="{{ path('app_article_list', { page: current_page - 1 }) }}">Предыдущая</a>
+        {% endif %}
+        <span>Страница {{ current_page }} из {{ total_pages }}</span>
+        {% if current_page < total_pages %}
+            <a href="{{ path('app_article_list', { page: current_page + 1 }) }}">Следующая</a>
+        {% endif %}
+    </div>
+{% endif %}
+</div>
 {% endblock %}
